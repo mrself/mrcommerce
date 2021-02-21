@@ -1,4 +1,27 @@
+parameters:
+  mrcommerce.bc.host: '%env(MRCOMMERCE_HOST))%'
+  mrcommerce.bc.access_token: '%env(MRCOMMERCE_ACCESS_TOKEN)%'
+  mrcommerce.bc.client_id: '%env(MRCOMMERCE_CLIENT_ID)%'
+
 services:
   _defaults:
     autowire: true
     autoconfigure: true
+
+  mrcommerce.bc.config_factory:
+    class: Mrself\Mrcommerce\ClientFactory
+    arguments:
+      $host: '%mrcommerce.bc.host%'
+      $accessToken: '%mrcommerce.bc.access_token%'
+      $clientId: '%mrcommerce.bc.client_id%'
+
+  BigCommerce\Api\v3\Configuration:
+    factory: '@mrcommerce.bc.config_factory'
+
+  BigCommerce\Api\v3\ApiClient:
+    arguments:
+      - '@BigCommerce\Api\v3\Configuration'
+
+  BigCommerce\Api\v3\Api\CatalogApi:
+    arguments:
+      - '@BigCommerce\Api\v3\ApiClient'
