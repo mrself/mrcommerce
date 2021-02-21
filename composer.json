@@ -2,5 +2,20 @@
     "name": "mrself/mrcommerce",
     "description": "mrcommerce",
     "type": "library",
-    "require": {}
+    "require": {
+        "moderntribe/bigcommerce-api-php-v3": "^2.0"
+    },
+    "require-dev": {
+        "symfony/framework-bundle": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mrself\\Mrcommerce\\": "./src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mrself\\Mrcommerce\\Tests\\": "./tests/"
+        }
+    }
 }
