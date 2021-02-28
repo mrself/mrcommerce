@@ -30,14 +30,21 @@ abstract class AbstractImporter
 
     public function importAll()
     {
-        ResourceWalker::make([
-            'callback' => function ($resource) {
-                return $this->importResource($resource);
-            },
-            'byOne' => true,
-            'method' => $this->getMethodMultiple(),
-            'queryParams' => $this->getWalkerQueryParams()
-        ])->walk();
+        $this->walker->configureOptions(function (ResourceWalkerOptions $options) {
+            $options->callback = function ($resource) {
+                $this->importBatchResource($resource);
+            };
+
+            $options->byOne = true;
+            $options->apiMethod = $this->getMethodMultiple();
+            $options->queryParams = $this->getWalkerQueryParams();
+        });
+
+        $this->walker->walk();
+    }
+
+    protected function importBatchResource($bcResource) {
+        $this->importResource($bcResource);
     }
 
     public function importResource($bcResource)

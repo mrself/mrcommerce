@@ -38,7 +38,7 @@ class ResourceWalker
         $this->options = $options;
     }
 
-    public function mergeOptions(callable $callback)
+    public function configureOptions(callable $callback)
     {
         $callback($this->options);
     }

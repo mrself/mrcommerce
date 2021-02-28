@@ -21,7 +21,7 @@ class ResourceWalkerTest extends TestCase
             ->method('getProducts')
             ->willReturn(new ProductResponse([]));
 
-        $this->walker->mergeOptions(function (ResourceWalkerOptions $options) {
+        $this->walker->configureOptions(function (ResourceWalkerOptions $options) {
             // Set null because callback should not be called in this test
             $options->callback = null;
             $options->byOne = true;
@@ -50,7 +50,7 @@ class ResourceWalkerTest extends TestCase
             $callbackParam = $param;
         };
 
-        $this->walker->mergeOptions(function (ResourceWalkerOptions $options) use ($callback) {
+        $this->walker->configureOptions(function (ResourceWalkerOptions $options) use ($callback) {
             // Set null because callback should not be called in this test
             $options->callback = $callback;
             $options->byOne = true;
