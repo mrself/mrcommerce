@@ -28,7 +28,7 @@ class HooksManager
     {
         Bigcommerce::createWebhook([
             'scope' => 'store/' . $resource . '/' . $scope,
-            'destination' => $this->hooksDestUrl . '/hooks/product/' . $scope,
+            'destination' => $this->hooksDestUrl . '/hooks/'. $resource . '/' . $scope,
             'active' => true,
         ]);
     }
