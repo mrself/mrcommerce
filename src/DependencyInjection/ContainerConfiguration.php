@@ -9,6 +9,7 @@ use League\Container\Container;
 use Mrself\Mrcommerce\Import\BC\Catalog\ImportersManager;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
 use Mrself\Mrcommerce\Import\BC\Catalog\ResourceWalkerOptions;
+use Mrself\Mrcommerce\Import\BC\Hooks\RequestParser;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -62,6 +63,7 @@ class ContainerConfiguration
         return [
             CatalogApi::class => $this->makeCatalogApi(),
             EventDispatcherInterface::class => new EventDispatcher(),
+            RequestParser::class => new RequestParser(),
         ];
     }
 
