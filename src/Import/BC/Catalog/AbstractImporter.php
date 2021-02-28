@@ -5,6 +5,7 @@ namespace Mrself\Mrcommerce\Import\BC\Catalog;
 use BigCommerce\Api\v3\Api\CatalogApi;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
+use Mrself\Mrcommerce\Import\BC\Catalog\ImportResult\ResourceImportResult;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -105,14 +106,16 @@ abstract class AbstractImporter
         $this->importResource($bcResource);
     }
 
-    public function importResource($bcResource)
+    public function importResource($bcResource): ResourceImportResult
     {
         if (!$this->shouldBeImported($bcResource)) {
-            return null;
+            return new ResourceImportResult($bcResource, null);
         }
 
-        $this->importProcessor->process($bcResource);
+        $processorResult = $this->importProcessor->process($bcResource);
         $this->dispatchEvent($bcResource);
+
+        return new ResourceImportResult($bcResource, $processorResult);
     }
 
     protected function shouldBeImported($bcResource): bool
