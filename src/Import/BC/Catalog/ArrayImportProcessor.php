@@ -26,4 +26,8 @@ class ArrayImportProcessor implements ImportProcessorInterface
     public function endImportResources(array $resources)
     {
     }
+
+    public function processBatchResource($bcResource)
+    {
+    }
 }

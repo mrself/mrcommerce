@@ -18,4 +18,16 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
         $this->repository->save($entity);
     }
 
+    public function processBatchResource($bcResource)
+    {
+        $entity = $this->repository->createEntity();
+        $entity->setBcId($bcResource->getId());
+
+        if (method_exists($this->repository, 'importBcResource')) {
+            $this->repository->importBcResource($bcResource);
+        }
+
+        $this->repository->save($entity);
+    }
+
 }

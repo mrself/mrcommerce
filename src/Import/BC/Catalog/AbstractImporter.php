@@ -110,17 +110,13 @@ abstract class AbstractImporter
         $this->walker->walk();
     }
 
-    protected function importBatchResource($bcResource) {
-        $this->importResource($bcResource);
-    }
-
-    public function importResource($bcResource): ResourceImportResult
+    protected function importBatchResource($bcResource): ResourceImportResult
     {
         if (!$this->shouldBeImported($bcResource)) {
             return new ResourceImportResult($bcResource, null);
         }
 
-        $processorResult = $this->importProcessor->process($bcResource);
+        $processorResult = $this->importProcessor->processBatchResource($bcResource);
         return new ResourceImportResult($bcResource, $processorResult);
     }
 

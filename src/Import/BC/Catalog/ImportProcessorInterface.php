@@ -9,4 +9,6 @@ interface ImportProcessorInterface
     public function startImportResources(array $resources);
 
     public function endImportResources(array $resources);
+
+    public function processBatchResource($bcResource);
 }
