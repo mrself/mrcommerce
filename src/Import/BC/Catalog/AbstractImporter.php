@@ -59,7 +59,8 @@ abstract class AbstractImporter
         }
 
         $processorResult = $this->importProcessor->process($bcResource);
-        $this->dispatchEvent($bcResource, $processorResult);
+        $event = new ResourceImportedEvent($bcResource, $processorResult);
+        $this->eventDispatcher->dispatch($event, $event::NAME);
 
         return new ResourceImportResult($bcResource, $processorResult);
     }
@@ -127,12 +128,6 @@ abstract class AbstractImporter
         }
 
         return true;
-    }
-
-    protected function dispatchEvent($bcResource, $processorResult)
-    {
-        $event = new ResourceImportedEvent($bcResource, $processorResult);
-        $this->eventDispatcher->dispatch($event, $event::NAME);
     }
 
     protected function getBcResource(int $bcId)
