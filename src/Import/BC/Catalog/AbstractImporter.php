@@ -3,7 +3,9 @@
 namespace Mrself\Mrcommerce\Import\BC\Catalog;
 
 use BigCommerce\Api\v3\Api\CatalogApi;
+use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractImporter
 {
@@ -17,10 +19,29 @@ abstract class AbstractImporter
      */
     private $walker;
 
-    public function __construct(CatalogApi $catalogApi, ResourceWalker $walker)
+    /**
+     * @var ImportProcessorInterface
+     */
+    private $importProcessor;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    public function __construct(CatalogApi $catalogApi, ResourceWalker $walker, EventDispatcherInterface $eventDispatcher)
     {
         $this->catalogApi = $catalogApi;
         $this->walker = $walker;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * @param ImportProcessorInterface $importProcessor
+     */
+    public function setImportProcessor(ImportProcessorInterface $importProcessor): void
+    {
+        $this->importProcessor = $importProcessor;
     }
 
     public function importByBcId(int $bcId)
@@ -49,7 +70,23 @@ abstract class AbstractImporter
 
     public function importResource($bcResource)
     {
+        if (!$this->shouldBeImported($bcResource)) {
+            return null;
+        }
 
+        $this->importProcessor->process($bcResource);
+        $this->dispatchEvent($bcResource);
+    }
+
+    protected function shouldBeImported($bcResource): bool
+    {
+        return true;
+    }
+
+    protected function dispatchEvent($bcResource)
+    {
+        $event = new ResourceImportedEvent($bcResource);
+        $this->eventDispatcher->dispatch($event, $event::NAME);
     }
 
     protected function getBcResource(int $bcId)

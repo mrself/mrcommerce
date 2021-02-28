@@ -5,7 +5,8 @@
     "require": {
         "moderntribe/bigcommerce-api-php-v3": "^2.0",
         "league/container": "^3.3",
-        "phpunit/phpunit": "^8"
+        "phpunit/phpunit": "^8",
+        "symfony/event-dispatcher": "^5.2"
     },
     "require-dev": {
         "symfony/framework-bundle": "^5.2"
