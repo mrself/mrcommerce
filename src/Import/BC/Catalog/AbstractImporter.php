@@ -87,7 +87,7 @@ abstract class AbstractImporter
         $this->importProcessor->startImportResources($resources);
 
         foreach ($resources as $resource) {
-            $this->importResource($resource);
+            $this->importBatchResource($resource);
         }
 
         $event = new ResourcesImportedEvent($resources);
@@ -98,11 +98,11 @@ abstract class AbstractImporter
     public function importAll()
     {
         $this->walker->configureOptions(function (ResourceWalkerOptions $options) {
-            $options->callback = function ($resource) {
-                $this->importBatchResource($resource);
+            $options->callback = function ($resources) {
+                $this->importResources($resources);
             };
 
-            $options->byOne = true;
+            $options->byOne = false;
             $options->apiMethod = $this->getMethodMultiple();
             $options->queryParams = $this->getWalkerQueryParams();
         });

@@ -9,6 +9,11 @@ class ArrayImportProcessor implements ImportProcessorInterface
      */
     private $resources = [];
 
+    /**
+     * @var array
+     */
+    private $batchResources = [];
+
     public function process($bcResource)
     {
         $this->resources[$bcResource->getId()] = $bcResource;
@@ -29,5 +34,19 @@ class ArrayImportProcessor implements ImportProcessorInterface
 
     public function processBatchResource($bcResource)
     {
+        $this->batchResources[$bcResource->getId()] = $bcResource;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBatchResources(): ?array
+    {
+        return $this->batchResources;
+    }
+
+    public function hasBatchImportedById(int $id): bool
+    {
+        return array_key_exists($id, $this->batchResources);
     }
 }

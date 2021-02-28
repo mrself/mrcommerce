@@ -46,7 +46,7 @@ class ProductImporterTest extends TestCase
 
         $this->importer->importAll();
 
-        $this->assertTrue($processor->hasImportedById(1));
+        $this->assertTrue($processor->hasBatchImportedById(1));
     }
 
     public function testImportByBcIds()
@@ -81,7 +81,7 @@ class ProductImporterTest extends TestCase
 
         $this->importer->importByBcIds([1, 2], 1);
 
-        $this->assertTrue($processor->hasImportedById(1));
+        $this->assertTrue($processor->hasBatchImportedById(1));
     }
 
     protected function setUp(): void
