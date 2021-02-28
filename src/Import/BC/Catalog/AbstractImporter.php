@@ -5,6 +5,7 @@ namespace Mrself\Mrcommerce\Import\BC\Catalog;
 use BigCommerce\Api\v3\Api\CatalogApi;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
+use Mrself\Mrcommerce\Import\BC\Catalog\Exception\ResourceNotFoundException;
 use Mrself\Mrcommerce\Import\BC\Catalog\ImportResult\ResourceImportResult;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -133,7 +134,13 @@ abstract class AbstractImporter
     protected function getBcResource(int $bcId)
     {
         $method = $this->getMethodSingle();
-        return $this->catalogApi->$method($bcId)->getData();
+        $resource = $this->catalogApi->$method($bcId)->getData();
+
+        if ($resource) {
+            return $resource;
+        }
+
+        throw new ResourceNotFoundException($bcId);
     }
 
     abstract protected function getMethodSingle(): string;

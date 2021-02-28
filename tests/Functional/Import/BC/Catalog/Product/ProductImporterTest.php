@@ -8,6 +8,7 @@ use BigCommerce\Api\v3\Model\ProductResponse;
 use Mrself\Mrcommerce\Import\BC\Catalog\ArrayImportProcessor;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
+use Mrself\Mrcommerce\Import\BC\Catalog\Exception\ResourceNotFoundException;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
 use Mrself\Mrcommerce\Tests\Helpers\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -105,6 +106,20 @@ class ProductImporterTest extends TestCase
         $this->importer->importByBcId(1);
 
         $this->assertTrue($processor->hasImportedById(1));
+    }
+
+    public function testImportByBcIdThrowsIfCanNotFindResource()
+    {
+        $this->expectExceptionObject(new ResourceNotFoundException(1));
+
+        $this->apiMock->expects($this->once())
+            ->method('getProductById')
+            ->with(1)
+            ->willReturn(new ProductResponse([
+                'data' => null
+            ]));
+
+        $this->importer->importByBcId(1);
     }
 
     protected function setUp(): void
