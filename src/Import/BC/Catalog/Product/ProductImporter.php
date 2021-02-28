@@ -9,7 +9,7 @@ class ProductImporter
     /**
      * @var CatalogApi
      */
-    private CatalogApi $catalogApi;
+    private $catalogApi;
 
     public function __construct(CatalogApi $catalogApi)
     {
