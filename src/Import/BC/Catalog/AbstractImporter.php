@@ -113,7 +113,7 @@ abstract class AbstractImporter
         }
 
         $processorResult = $this->importProcessor->process($bcResource);
-        $this->dispatchEvent($bcResource);
+        $this->dispatchEvent($bcResource, $processorResult);
 
         return new ResourceImportResult($bcResource, $processorResult);
     }
@@ -123,9 +123,9 @@ abstract class AbstractImporter
         return true;
     }
 
-    protected function dispatchEvent($bcResource)
+    protected function dispatchEvent($bcResource, $processorResult)
     {
-        $event = new ResourceImportedEvent($bcResource);
+        $event = new ResourceImportedEvent($bcResource, $processorResult);
         $this->eventDispatcher->dispatch($event, $event::NAME);
     }
 

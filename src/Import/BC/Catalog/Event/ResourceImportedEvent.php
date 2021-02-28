@@ -10,9 +10,12 @@ class ResourceImportedEvent extends Event
 
     private $bcResource;
 
-    public function __construct($bcResource)
+    private $processorResult;
+
+    public function __construct($bcResource, $processorResult)
     {
         $this->bcResource = $bcResource;
+        $this->processorResult = $processorResult;
     }
 
     /**
@@ -21,5 +24,13 @@ class ResourceImportedEvent extends Event
     public function getBcResource()
     {
         return $this->bcResource;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProcessorResult()
+    {
+        return $this->processorResult;
     }
 }
