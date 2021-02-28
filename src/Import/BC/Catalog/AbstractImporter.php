@@ -120,6 +120,10 @@ abstract class AbstractImporter
 
     protected function shouldBeImported($bcResource): bool
     {
+        if (method_exists($this->importProcessor, 'shouldBeImported')) {
+            return $this->importProcessor->shouldBeImported($bcResource);
+        }
+
         return true;
     }
 
