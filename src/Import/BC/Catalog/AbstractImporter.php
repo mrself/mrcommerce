@@ -54,6 +54,14 @@ abstract class AbstractImporter
     public function importByBcId(int $bcId)
     {
         $bcResource = $this->getBcResource($bcId);
+        if (!$this->shouldBeImported($bcResource)) {
+            return new ResourceImportResult($bcResource, null);
+        }
+
+        $processorResult = $this->importProcessor->process($bcResource);
+        $this->dispatchEvent($bcResource, $processorResult);
+
+        return new ResourceImportResult($bcResource, $processorResult);
     }
 
     public function importByBcIds(array $ids, ?int $resourceLimit = null)
@@ -113,8 +121,6 @@ abstract class AbstractImporter
         }
 
         $processorResult = $this->importProcessor->process($bcResource);
-        $this->dispatchEvent($bcResource, $processorResult);
-
         return new ResourceImportResult($bcResource, $processorResult);
     }
 
@@ -135,8 +141,11 @@ abstract class AbstractImporter
 
     protected function getBcResource(int $bcId)
     {
-
+        $method = $this->getMethodSingle();
+        return $this->catalogApi->$method($bcId)->getData();
     }
+
+    abstract protected function getMethodSingle(): string;
 
     abstract protected function getMethodMultiple(): string;
 
