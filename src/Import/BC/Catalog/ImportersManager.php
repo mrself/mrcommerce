@@ -30,6 +30,11 @@ class ImportersManager
         return $this->importersMap[$type];
     }
 
+    public function getProductImporter(): ProductImporter
+    {
+        return $this->productImporter;
+    }
+
     /**
      * @param array[] $recordItems
      */

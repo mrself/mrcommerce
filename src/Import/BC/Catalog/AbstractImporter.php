@@ -49,6 +49,11 @@ abstract class AbstractImporter
         $bcResource = $this->getBcResource($bcId);
     }
 
+    public function importByBcIds(array $ids)
+    {
+
+    }
+
     public function importAll()
     {
         $this->walker->configureOptions(function (ResourceWalkerOptions $options) {

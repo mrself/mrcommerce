@@ -47,6 +47,29 @@ class HookRecordProcessor
         $this->import($forImport);
     }
 
+    /**
+     * @param HookRecordInterface[] $records
+     * @param callable $deleteCallback
+     */
+    public function processProductRecords(array $records, callable $deleteCallback)
+    {
+        $forImport = [];
+        $forDelete = [];
+
+        foreach ($records as $record) {
+            if ($record->isCreated() || $record->isUpdated()) {
+                $forImport[$record->getResourceId()] = $record;
+            } else {
+                $forDelete[$record->getResourceId()] = $record;
+            }
+
+            $record->makeProcessed();
+        }
+
+        $this->importersManager->getProductImporter()->importByBcIds(array_keys($forImport));
+        $deleteCallback(array_keys($forDelete));
+    }
+
     public function processOne(HookRecordInterface $record)
     {
         $importer = $this->importersManager->defineImporter($record->getResourceType());
