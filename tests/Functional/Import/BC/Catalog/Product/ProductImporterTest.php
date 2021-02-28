@@ -2,6 +2,8 @@
 
 namespace Mrself\Mrcommerce\Tests\Functional\Import\BC\Catalog\Product;
 
+use BigCommerce\Api\v3\Model\Product;
+use BigCommerce\Api\v3\Model\ProductResponse;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
 use Mrself\Mrcommerce\Tests\Helpers\TestCase;
 
@@ -14,8 +16,20 @@ class ProductImporterTest extends TestCase
 
     public function testBase()
     {
-        // @todo Implement
-        $this->expectNotToPerformAssertions();
+        $this->apiMock->expects($this->exactly(2))
+            ->method('getProducts')
+            ->willReturnOnConsecutiveCalls(
+                new ProductResponse([
+                    'data' => [
+                        new Product(['id' => 1])
+                    ],
+                ]),
+                new ProductResponse([
+                    'data' => [],
+                ])
+            );
+
+        $this->importer->importAll();
     }
 
     protected function setUp(): void

@@ -95,7 +95,11 @@ class ResourceWalker
         ];
 
         $response = $this->options->client->$method(array_merge($params, $this->options->queryParams));
-        return $response ? $response->getData() : null;
+        if (!$response || !$response->getData()) {
+            return null;
+        }
+
+        return $response->getData();
     }
 
     protected function definePage(): int
