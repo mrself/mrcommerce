@@ -7,10 +7,11 @@
         "league/container": "^3.3",
         "phpunit/phpunit": "^8",
         "symfony/event-dispatcher": "^5.2",
-        "ext-json": "*"
+        "ext-json": "*",
+        "bigcommerce/api": "^3.2"
     },
     "require-dev": {
-        "symfony/framework-bundle": "^5.2",
+        "symfony/framework-bundle": "^5.2"
     },
     "autoload": {
         "psr-4": {

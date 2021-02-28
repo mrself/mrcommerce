@@ -6,9 +6,11 @@ use BigCommerce\Api\v3\Api\CatalogApi;
 use BigCommerce\Api\v3\ApiClient;
 use BigCommerce\Api\v3\Configuration;
 use League\Container\Container;
+use Mrself\Mrcommerce\BC\BigcommerceV2Configurator;
 use Mrself\Mrcommerce\Import\BC\Catalog\ImportersManager;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
 use Mrself\Mrcommerce\Import\BC\Catalog\ResourceWalkerOptions;
+use Mrself\Mrcommerce\Import\BC\Hooks\HooksManager;
 use Mrself\Mrcommerce\Import\BC\Hooks\RequestParser;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -49,6 +51,19 @@ class ContainerConfiguration
                 $service->addArgument($argument);
             }
         }
+
+        $container->share(BigcommerceV2Configurator::class)
+            ->addArguments([
+                $container->get('mr_bigcommerce.client_id'),
+                $container->get('mr_bigcommerce.access_token'),
+                $container->get('mr_bigcommerce.store_hash'),
+            ]);
+
+        $container->share(HooksManager::class)
+            ->addArguments([
+                BigcommerceV2Configurator::class,
+                $container->get('mrcommerce_hooks_dest_url'),
+            ]);
 
         return $this;
     }
