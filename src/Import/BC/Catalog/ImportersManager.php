@@ -29,4 +29,12 @@ class ImportersManager
     {
         return $this->importersMap[$type];
     }
+
+    /**
+     * @param array[] $recordItems
+     */
+    public function importByBcIds(array $recordItems)
+    {
+
+    }
 }

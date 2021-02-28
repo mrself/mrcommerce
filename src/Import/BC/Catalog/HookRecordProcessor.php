@@ -11,9 +11,19 @@ class HookRecordProcessor
      */
     private $importersManager;
 
+    /**
+     * @var callable
+     */
+    private $deleteCallback;
+
     public function __construct(ImportersManager $importersManager)
     {
         $this->importersManager = $importersManager;
+    }
+
+    public function setDeleteCallback(callable $callback)
+    {
+        $this->deleteCallback = $callback;
     }
 
     /**
@@ -21,14 +31,39 @@ class HookRecordProcessor
      */
     public function processMany(array $records)
     {
+        $forImport = [];
+        $forDelete = [];
+
         foreach ($records as $record) {
-            $this->processOne($record);
+            if ($record->isCreated() || $record->isUpdated()) {
+                $forImport[$record->getResourceId()] = $record;
+            } else {
+                $forDelete[$record->getResourceId()] = $record;
+            }
+
             $record->makeProcessed();
         }
+
+        $this->import($forImport);
     }
 
     public function processOne(HookRecordInterface $record)
     {
         $importer = $this->importersManager->defineImporter($record->getResourceType());
+    }
+
+    /**
+     * @param HookRecordInterface[] $forImport
+     */
+    private function import(array $forImport)
+    {
+        $records = [];
+        foreach ($forImport as $item) {
+            $records[] = [
+                'type' => $item->getResourceType(),
+                'id' => $item->getResourceId(),
+            ];
+        }
+        $this->importersManager->importByBcIds($records);
     }
 }

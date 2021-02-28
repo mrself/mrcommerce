@@ -12,9 +12,15 @@ interface HookRecordInterface
 
     public function getResourceType(): int;
 
-    public function setResourceId($id);
+    public function setResourceId(int $id);
+
+    public function getResourceId(): int;
 
     public function makeProcessed();
 
     public function setDateCreated(\DateTime $dateCreated);
+
+    public function isCreated(): bool;
+
+    public function isUpdated(): bool;
 }
