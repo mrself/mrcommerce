@@ -4,8 +4,9 @@ namespace Mrself\Mrcommerce\Import\BC\Catalog\Product;
 
 use BigCommerce\Api\v3\Api\CatalogApi;
 use Mrself\Mrcommerce\Import\BC\Catalog\AbstractImporter;
+use Mrself\Mrcommerce\Import\BC\Catalog\ImporterInterface;
 
-class ProductImporter extends AbstractImporter
+class ProductImporter extends AbstractImporter implements ImporterInterface
 {
     protected function getMethodMultiple(): string
     {

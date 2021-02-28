@@ -6,6 +6,7 @@ use BigCommerce\Api\v3\Api\CatalogApi;
 use BigCommerce\Api\v3\ApiClient;
 use BigCommerce\Api\v3\Configuration;
 use League\Container\Container;
+use Mrself\Mrcommerce\Import\BC\Catalog\ImportersManager;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
 use Mrself\Mrcommerce\Import\BC\Catalog\ResourceWalkerOptions;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
@@ -79,6 +80,10 @@ class ContainerConfiguration
 
             ResourceWalker::class => [
                 ResourceWalkerOptions::class
+            ],
+
+            ImportersManager::class => [
+                ProductImporter::class,
             ]
         ];
     }
