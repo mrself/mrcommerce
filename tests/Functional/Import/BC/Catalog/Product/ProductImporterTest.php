@@ -7,6 +7,11 @@ use Mrself\Mrcommerce\Tests\Helpers\TestCase;
 
 class ProductImporterTest extends TestCase
 {
+    /**
+     * @var ProductImporter
+     */
+    private $importer;
+
     public function testBase()
     {
         // @todo Implement

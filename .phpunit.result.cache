@@ -1,1 +1,0 @@
-C:37:"PHPUnit\Runner\DefaultTestResultCache":252:{a:2:{s:7:"defects";a:1:{s:90:"Mrself\Mrcommerce\Tests\Functional\Import\BC\Catalog\Product\ProductImporterTest::testBase";i:4;}s:5:"times";a:1:{s:90:"Mrself\Mrcommerce\Tests\Functional\Import\BC\Catalog\Product\ProductImporterTest::testBase";d:0.054;}}}

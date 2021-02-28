@@ -3,16 +3,13 @@
 namespace Mrself\Mrcommerce\Import\BC\Catalog\Product;
 
 use BigCommerce\Api\v3\Api\CatalogApi;
+use Mrself\Mrcommerce\Import\BC\Catalog\AbstractImporter;
 
-class ProductImporter
+class ProductImporter extends AbstractImporter
 {
-    /**
-     * @var CatalogApi
-     */
-    private $catalogApi;
-
-    public function __construct(CatalogApi $catalogApi)
+    protected function getMethodMultiple(): string
     {
-        $this->catalogApi = $catalogApi;
+        return 'getProducts';
     }
+
 }

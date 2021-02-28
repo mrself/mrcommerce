@@ -7,6 +7,8 @@ use BigCommerce\Api\v3\ApiClient;
 use BigCommerce\Api\v3\Configuration;
 use League\Container\Container;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
+use Mrself\Mrcommerce\Import\BC\Catalog\ResourceWalkerOptions;
+use Mrself\Mrcommerce\Import\BC\ResourceWalker;
 
 class ContainerConfiguration
 {
@@ -63,13 +65,26 @@ class ContainerConfiguration
     {
         return [
             ProductImporter::class => [
+                CatalogApi::class,
+                ResourceWalker::class
+            ],
+
+            ResourceWalkerOptions::class => [
                 CatalogApi::class
+            ],
+
+            ResourceWalker::class => [
+                ResourceWalkerOptions::class
             ]
         ];
     }
 
     private function makeCatalogApi()
     {
+        if ($catalogApi = $this->container->get(CatalogApi::class)) {
+            return $catalogApi;
+        }
+
         $config = new Configuration();
         $config->setHost($this->container->get('mr_bigcommerce.host'));
         $config->setAccessToken($this->container->get('mr_bigcommerce.access_token'));
