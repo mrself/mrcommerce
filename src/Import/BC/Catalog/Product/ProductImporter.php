@@ -4,7 +4,7 @@ namespace Mrself\Mrcommerce\Import\BC\Catalog\Product;
 
 use BigCommerce\Api\v3\Api\CatalogApi;
 
-class ProductImport
+class ProductImporter
 {
     /**
      * @var CatalogApi
