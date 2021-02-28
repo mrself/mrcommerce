@@ -84,6 +84,29 @@ class ProductImporterTest extends TestCase
         $this->assertTrue($processor->hasBatchImportedById(1));
     }
 
+    public function testImportByBcId()
+    {
+        $this->apiMock->expects($this->once())
+            ->method('getProductById')
+            ->with(1)
+            ->willReturn(new ProductResponse([
+                'data' => new Product(['id' => 1])
+            ]));
+
+        $processor = new ArrayImportProcessor();
+        $this->importer->setImportProcessor($processor);
+
+        /** @var EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get(EventDispatcherInterface::class);
+        $dispatcher->addListener(ResourceImportedEvent::NAME, function (ResourceImportedEvent $event) {
+            $this->assertEquals(1, $event->getBcResource()->getId());
+        });
+
+        $this->importer->importByBcId(1);
+
+        $this->assertTrue($processor->hasImportedById(1));
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

@@ -15,6 +15,6 @@ class ProductImporter extends AbstractImporter implements ImporterInterface
 
     protected function getMethodSingle(): string
     {
-        return 'product';
+        return 'getProductById';
     }
 }
