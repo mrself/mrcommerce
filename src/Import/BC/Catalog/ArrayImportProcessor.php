@@ -19,4 +19,11 @@ class ArrayImportProcessor implements ImportProcessorInterface
         return array_key_exists($id, $this->resources);
     }
 
+    public function startImportResources(array $resources)
+    {
+    }
+
+    public function endImportResources(array $resources)
+    {
+    }
 }

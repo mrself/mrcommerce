@@ -4,6 +4,7 @@ namespace Mrself\Mrcommerce\Import\BC\Catalog;
 
 use BigCommerce\Api\v3\Api\CatalogApi;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
+use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -29,6 +30,11 @@ abstract class AbstractImporter
      */
     private $eventDispatcher;
 
+    /**
+     * @var int
+     */
+    private $resourceLimit = ResourceWalker::MAX_RESOURCE_LIMIT;
+
     public function __construct(CatalogApi $catalogApi, ResourceWalker $walker, EventDispatcherInterface $eventDispatcher)
     {
         $this->catalogApi = $catalogApi;
@@ -49,9 +55,35 @@ abstract class AbstractImporter
         $bcResource = $this->getBcResource($bcId);
     }
 
-    public function importByBcIds(array $ids)
+    public function importByBcIds(array $ids, ?int $resourceLimit = null)
     {
+        $resourceLimit = $resourceLimit ?? $this->resourceLimit;
+        if (count($ids) > $resourceLimit) {
+            for ($i = 0; $i <= $resourceLimit; $i++) {
+                $idsPart = array_slice($ids, $i * $resourceLimit, $resourceLimit);
+                $this->importByBcIds($idsPart);
+            }
+            return;
+        }
 
+        $method = $this->getMethodMultiple();
+        $resources = $this->catalogApi->$method([
+            'id:in' => $ids
+        ]);
+        $this->importResources($resources->getData());
+    }
+
+    public function importResources(array $resources)
+    {
+        $this->importProcessor->startImportResources($resources);
+
+        foreach ($resources as $resource) {
+            $this->importResource($resource);
+        }
+
+        $event = new ResourcesImportedEvent($resources);
+        $this->eventDispatcher->dispatch($event, $event::NAME);
+        $this->importProcessor->endImportResources($resources);
     }
 
     public function importAll()

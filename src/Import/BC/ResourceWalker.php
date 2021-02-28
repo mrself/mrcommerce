@@ -6,7 +6,7 @@ use Mrself\Mrcommerce\Import\BC\Catalog\ResourceWalkerOptions;
 
 class ResourceWalker
 {
-    public const RESOURCE_LIMIT = 250;
+    public const MAX_RESOURCE_LIMIT = 250;
 
     /**
      * @var int
@@ -21,7 +21,7 @@ class ResourceWalker
     /**
      * @var int
      */
-    private $resourceLimit = ResourceWalker::RESOURCE_LIMIT;
+    private $resourceLimit = ResourceWalker::MAX_RESOURCE_LIMIT;
 
     /**
      * @var ResourceWalkerOptions

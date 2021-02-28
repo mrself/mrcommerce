@@ -3,9 +3,11 @@
 namespace Mrself\Mrcommerce\Tests\Functional\Import\BC\Catalog\Product;
 
 use BigCommerce\Api\v3\Model\Product;
+use BigCommerce\Api\v3\Model\ProductCollectionResponse;
 use BigCommerce\Api\v3\Model\ProductResponse;
 use Mrself\Mrcommerce\Import\BC\Catalog\ArrayImportProcessor;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
+use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
 use Mrself\Mrcommerce\Tests\Helpers\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -43,6 +45,41 @@ class ProductImporterTest extends TestCase
         });
 
         $this->importer->importAll();
+
+        $this->assertTrue($processor->hasImportedById(1));
+    }
+
+    public function testImportByBcIds()
+    {
+        $this->apiMock->expects($this->exactly(2))
+            ->method('getProducts')
+            ->withConsecutive(
+                [['id:in' => [1]]],
+                [['id:in' => [2]]]
+            )
+            ->willReturnOnConsecutiveCalls(
+                new ProductCollectionResponse([
+                    'data' => [
+                        new Product(['id' => 1])
+                    ],
+                ]),
+                new ProductCollectionResponse([
+                    'data' => [
+                        new Product(['id' => 2])
+                    ],
+                ])
+            );
+
+        $processor = new ArrayImportProcessor();
+        $this->importer->setImportProcessor($processor);
+
+        /** @var EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get(EventDispatcherInterface::class);
+        $dispatcher->addListener(ResourcesImportedEvent::NAME, function (ResourcesImportedEvent $event) {
+            $this->assertCount(1, $event->getResources());
+        });
+
+        $this->importer->importByBcIds([1, 2], 1);
 
         $this->assertTrue($processor->hasImportedById(1));
     }
