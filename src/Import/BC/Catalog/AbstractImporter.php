@@ -3,6 +3,7 @@
 namespace Mrself\Mrcommerce\Import\BC\Catalog;
 
 use BigCommerce\Api\v3\Api\CatalogApi;
+use Mrself\Mrcommerce\Import\BC\Catalog\Event\BatchResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Exception\ResourceNotFoundException;
@@ -115,11 +116,19 @@ abstract class AbstractImporter
     protected function importBatchResource($bcResource): ResourceImportResult
     {
         if (!$this->shouldBeImported($bcResource)) {
-            return new ResourceImportResult($bcResource, null);
+            return $this->getBatchResourceImportResult($bcResource, null);
         }
 
         $processorResult = $this->importProcessor->processBatchResource($bcResource);
-        return new ResourceImportResult($bcResource, $processorResult);
+        return $this->getBatchResourceImportResult($bcResource, $processorResult);
+    }
+
+    protected function getBatchResourceImportResult($bcResource, $processorResult): ResourceImportResult
+    {
+        $result = new ResourceImportResult($bcResource, $processorResult);
+        $event = new BatchResourceImportedEvent($result);
+        $this->eventDispatcher->dispatch($event, $event::NAME);
+        return $result;
     }
 
     protected function shouldBeImported($bcResource): bool

@@ -5,6 +5,7 @@ namespace Mrself\Mrcommerce\Tests\Helpers;
 use BigCommerce\Api\v3\Api\CatalogApi;
 use League\Container\Container;
 use Mrself\Mrcommerce\DependencyInjection\ContainerConfiguration;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -17,6 +18,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @var CatalogApi|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $apiMock;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -34,5 +40,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             CatalogApi::class => $this->apiMock,
         ]);
         $this->container = $configuration->register()->getContainer();
+        $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
     }
 }

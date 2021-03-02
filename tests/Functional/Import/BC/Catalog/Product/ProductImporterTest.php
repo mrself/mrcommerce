@@ -6,9 +6,11 @@ use BigCommerce\Api\v3\Model\Product;
 use BigCommerce\Api\v3\Model\ProductCollectionResponse;
 use BigCommerce\Api\v3\Model\ProductResponse;
 use Mrself\Mrcommerce\Import\BC\Catalog\ArrayImportProcessor;
+use Mrself\Mrcommerce\Import\BC\Catalog\Event\BatchResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Exception\ResourceNotFoundException;
+use Mrself\Mrcommerce\Import\BC\Catalog\ImportResult\ResourceImportResult;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
 use Mrself\Mrcommerce\Tests\Helpers\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -45,9 +47,56 @@ class ProductImporterTest extends TestCase
             $this->assertEquals(1, $event->getBcResource()->getId());
         });
 
+        $this->eventDispatcher->addListener(
+            BatchResourceImportedEvent::NAME,
+            function (BatchResourceImportedEvent $event) {
+                $this->assertInstanceOf(ResourceImportResult::class, $event->getResult());
+            }
+        );
+
         $this->importer->importAll();
 
         $this->assertTrue($processor->hasBatchImportedById(1));
+    }
+
+    public function testResourceIsSkippedIfImportProcessorTellsThatItShouldBeSkipped()
+    {
+        $this->apiMock->expects($this->exactly(2))
+            ->method('getProducts')
+            ->willReturnOnConsecutiveCalls(
+                new ProductResponse([
+                    'data' => [
+                        new Product(['id' => 1])
+                    ],
+                ]),
+                new ProductResponse([
+                    'data' => [],
+                ])
+            );
+
+        $processor = new ArrayImportProcessor();
+        $processor->setSkipAll(true);
+        $this->importer->setImportProcessor($processor);
+
+        /** @var EventDispatcher $dispatcher */
+        $dispatcher = $this->container->get(EventDispatcherInterface::class);
+        $dispatcher->addListener(ResourceImportedEvent::NAME, function (ResourceImportedEvent $event) {
+            $this->assertEquals(1, $event->getBcResource()->getId());
+        });
+
+        $eventDispatched = false;
+        $this->eventDispatcher->addListener(
+            BatchResourceImportedEvent::NAME,
+            function (BatchResourceImportedEvent $event) use (&$eventDispatched) {
+                $result = $event->getResult();
+                $this->assertInstanceOf(ResourceImportResult::class, $result);
+                $this->assertFalse($result->isProcessed());
+                $eventDispatched = true;
+            }
+        );
+
+        $this->importer->importAll();
+        $this->assertTrue($eventDispatched);
     }
 
     public function testImportByBcIds()

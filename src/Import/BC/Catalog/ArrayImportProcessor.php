@@ -14,6 +14,11 @@ class ArrayImportProcessor implements ImportProcessorInterface
      */
     private $batchResources = [];
 
+    /**
+     * @var bool
+     */
+    private $skipAll;
+
     public function process($bcResource)
     {
         $this->resources[$bcResource->getId()] = $bcResource;
@@ -48,5 +53,19 @@ class ArrayImportProcessor implements ImportProcessorInterface
     public function hasBatchImportedById(int $id): bool
     {
         return array_key_exists($id, $this->batchResources);
+    }
+
+    public function shouldBeImported($bcResource): bool
+    {
+        if (is_null($this->skipAll)) {
+            return true;
+        }
+
+        return !$this->skipAll;
+    }
+
+    public function setSkipAll(bool $value)
+    {
+        $this->skipAll = true;
     }
 }
