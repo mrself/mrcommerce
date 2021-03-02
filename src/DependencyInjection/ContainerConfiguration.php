@@ -62,7 +62,7 @@ class ContainerConfiguration
         $container->share(HooksManager::class)
             ->addArguments([
                 BigcommerceV2Configurator::class,
-                $container->get('mrcommerce_hooks_dest_url'),
+                $container->get('mr_bigcommerce.hooks_dest_url'),
             ]);
 
         return $this;
