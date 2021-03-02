@@ -29,6 +29,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             'mr_bigcommerce.host' => 'bc_host',
             'mr_bigcommerce.access_token' => 'bc_access_token',
             'mr_bigcommerce.client_id' => 'bc_client_id',
+            'mr_bigcommerce.store_hash' => 'store_hash',
+            'mr_bigcommerce.hooks_dest_url' => 'store_hash',
             CatalogApi::class => $this->apiMock,
         ]);
         $this->container = $configuration->register()->getContainer();
