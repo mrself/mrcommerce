@@ -89,10 +89,7 @@ class ResourceWalker
     private function getPage()
     {
         $method = $this->options->apiMethod;
-        $params = $this->options->resourceParams + [
-            'page' => $this->definePage(),
-            'limit' => $this->resourceLimit
-        ];
+        $params = $this->makeParams();
 
         $response = $this->options->client->$method(array_merge($params, $this->options->queryParams));
         if (!$response || !$response->getData()) {
@@ -100,6 +97,18 @@ class ResourceWalker
         }
 
         return $response->getData();
+    }
+
+    protected function makeParams(): array
+    {
+        $includeResources = [
+            'include' => $this->options->includeResources,
+        ];
+
+        return array_merge($this->options->resourceParams, $includeResources, [
+            'page' => $this->definePage(),
+            'limit' => $this->resourceLimit
+        ]);
     }
 
     protected function definePage(): int

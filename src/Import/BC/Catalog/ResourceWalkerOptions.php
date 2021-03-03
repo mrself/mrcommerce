@@ -6,6 +6,11 @@ use BigCommerce\Api\v3\Api\CatalogApi;
 
 class ResourceWalkerOptions
 {
+    public const INCLUDE_RESOURCE_IMAGES = 'images';
+    public const INCLUDE_RESOURCE_OPTIONS = 'options';
+    public const INCLUDE_RESOURCE_VARIANTS = 'variants';
+    public const INCLUDE_RESOURCE_PRIMARY_IMAGE = 'primary_image';
+
     /**
      * @var CatalogApi
      */
@@ -35,6 +40,8 @@ class ResourceWalkerOptions
      * @var callable
      */
     public $callback;
+
+    public $includeResources = [];
 
     public function __construct(CatalogApi $catalogApi)
     {

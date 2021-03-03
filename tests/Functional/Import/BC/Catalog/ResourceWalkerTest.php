@@ -30,6 +30,31 @@ class ResourceWalkerTest extends TestCase
         $this->walker->walk();
     }
 
+    public function testItUsesIncludeResourcesOption()
+    {
+        $this->apiMock->expects($this->once())
+            ->method('getProducts')
+            ->with([
+                'page' => 1,
+                'limit' => ResourceWalker::MAX_RESOURCE_LIMIT,
+                'include' => ['images', 'options', 'variants'],
+            ])
+            ->willReturn(new ProductResponse([]));
+
+        $this->walker->configureOptions(function (ResourceWalkerOptions $options) {
+            // Set null because callback should not be called in this test
+            $options->callback = null;
+            $options->byOne = true;
+            $options->apiMethod = 'getProducts';
+            $options->includeResources = [
+                ResourceWalkerOptions::INCLUDE_RESOURCE_IMAGES,
+                ResourceWalkerOptions::INCLUDE_RESOURCE_OPTIONS,
+                ResourceWalkerOptions::INCLUDE_RESOURCE_VARIANTS,
+            ];
+        });
+        $this->walker->walk();
+    }
+
     public function testItProcessesOneFoundProductWithByOneOption()
     {
         $this->apiMock->expects($this->exactly(2))

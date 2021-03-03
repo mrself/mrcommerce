@@ -108,6 +108,8 @@ abstract class AbstractImporter
             $options->byOne = false;
             $options->apiMethod = $this->getMethodMultiple();
             $options->queryParams = $this->getWalkerQueryParams();
+
+            $this->configureResourceWalkerOptions($options);
         });
 
         $this->walker->walk();
@@ -159,5 +161,9 @@ abstract class AbstractImporter
     protected function getWalkerQueryParams(): array
     {
         return [];
+    }
+
+    protected function configureResourceWalkerOptions(ResourceWalkerOptions $options)
+    {
     }
 }
