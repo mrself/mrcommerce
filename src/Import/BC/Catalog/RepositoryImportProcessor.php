@@ -4,6 +4,7 @@ namespace Mrself\Mrcommerce\Import\BC\Catalog;
 
 use BigCommerce\Api\v3\Model\Product as BcProduct;
 use Mrself\Mrcommerce\Entity\EntityInterface;
+use Mrself\Mrcommerce\Import\BC\Sync\SyncInterface;
 use Mrself\Mrcommerce\Repository\Catalog\ImportProcessor\RepositoryInterface;
 
 class RepositoryImportProcessor extends AbstractImportProcessor implements ImportProcessorInterface
@@ -13,9 +14,15 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
      */
     protected $repository;
 
-    public function __construct(RepositoryInterface $repository)
+    /**
+     * @var SyncInterface
+     */
+    private $sync;
+
+    public function __construct(RepositoryInterface $repository, SyncInterface $sync)
     {
         $this->repository = $repository;
+        $this->sync = $sync;
     }
 
     public function process($bcResource)
@@ -36,14 +43,14 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
         return $entity;
     }
 
-    private function sync($bcProduct, EntityInterface $product)
+    private function sync($bcResource, EntityInterface $entity)
     {
-
+        $this->sync->sync($bcResource, $entity);
     }
 
-    private function find(BcProduct $bcProduct): ?EntityInterface
+    private function find($bcResource): ?EntityInterface
     {
-        return $this->repository->findOneByBcId($bcProduct->getId());
+        return $this->repository->findOneByBcId($bcResource->getId());
     }
 
     public function processBatchResource($bcResource)
