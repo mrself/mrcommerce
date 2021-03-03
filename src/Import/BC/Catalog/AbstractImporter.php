@@ -150,13 +150,18 @@ abstract class AbstractImporter
     protected function getBcResource(int $bcId)
     {
         $method = $this->getMethodSingle();
-        $resource = $this->catalogApi->$method($bcId)->getData();
+        $resource = $this->findResource($bcId, $method)->getData();
 
         if ($resource) {
             return $resource;
         }
 
         throw new ResourceNotFoundException($bcId);
+    }
+
+    protected function findResource(int $bcId, string $method)
+    {
+        return $this->catalogApi->$method($bcId)->getData();
     }
 
     abstract protected function getMethodSingle(): string;
