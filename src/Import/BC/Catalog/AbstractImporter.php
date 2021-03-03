@@ -150,7 +150,7 @@ abstract class AbstractImporter
     protected function getBcResource(int $bcId)
     {
         $method = $this->getMethodSingle();
-        $resource = $this->findResource($bcId, $method)->getData();
+        $resource = $this->findResource($bcId, $method);
 
         if ($resource) {
             return $resource;
