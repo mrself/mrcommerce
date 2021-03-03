@@ -10,5 +10,5 @@ interface RepositoryInterface
 
     public function createEntity(): EntityInterface;
 
-    public function findOneByBcId(int $bcId): EntityInterface;
+    public function findOneByBcId(int $bcId): ?EntityInterface;
 }
