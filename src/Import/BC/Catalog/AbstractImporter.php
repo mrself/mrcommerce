@@ -79,10 +79,15 @@ abstract class AbstractImporter
         }
 
         $method = $this->getMethodMultiple();
-        $resources = $this->catalogApi->$method([
+        $resources = $this->queryResourcesByIds($method, $ids);
+        $this->importResources($resources->getData());
+    }
+
+    protected function queryResourcesByIds(string $method, array $ids)
+    {
+        return $this->catalogApi->$method([
             'id:in' => $ids
         ]);
-        $this->importResources($resources->getData());
     }
 
     public function importResources(array $resources)
