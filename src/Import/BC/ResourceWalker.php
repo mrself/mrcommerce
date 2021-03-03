@@ -101,14 +101,24 @@ class ResourceWalker
 
     protected function makeParams(): array
     {
-        $includeResources = [
-            'include' => $this->options->includeResources,
-        ];
-
-        return array_merge($this->options->resourceParams, $includeResources, [
+        $params = array_merge($this->options->resourceParams, [
             'page' => $this->definePage(),
             'limit' => $this->resourceLimit
         ]);
+
+        if ($this->options->includeResources) {
+            $params = array_merge($params, [
+                'include' => $this->options->includeResources,
+            ]);
+        }
+
+        if ($this->options->includeFields) {
+            $params = array_merge($params, [
+                'include_fields' => $this->options->includeFields,
+            ]);
+        }
+
+        return $params;
     }
 
     protected function definePage(): int

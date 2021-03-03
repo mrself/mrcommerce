@@ -43,6 +43,11 @@ class ResourceWalkerOptions
 
     public $includeResources = [];
 
+    /**
+     * @var string
+     */
+    public $includeFields = [];
+
     public function __construct(CatalogApi $catalogApi)
     {
         $this->client = $catalogApi;
