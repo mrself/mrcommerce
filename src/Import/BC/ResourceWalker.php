@@ -107,15 +107,11 @@ class ResourceWalker
         ]);
 
         if ($this->options->includeResources) {
-            $params = array_merge($params, [
-                'include' => $this->options->includeResources,
-            ]);
+            $params['include'] = $this->options->includeResources;
         }
 
         if ($this->options->includeFields) {
-            $params = array_merge($params, [
-                'include_fields' => $this->options->includeFields,
-            ]);
+            $params['include_fields'] = $this->options->includeFields;
         }
 
         return $params;
