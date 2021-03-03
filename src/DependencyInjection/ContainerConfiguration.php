@@ -52,6 +52,12 @@ class ContainerConfiguration
             }
         }
 
+        $container->add(ResourceWalker::class)
+            ->addArgument(ResourceWalkerOptions::class);
+
+        $container->add(ResourceWalkerOptions::class)
+            ->addArgument(CatalogApi::class);
+
         $container->share(BigcommerceV2Configurator::class)
             ->addArguments([
                 $container->get('mr_bigcommerce.client_id'),
@@ -89,14 +95,6 @@ class ContainerConfiguration
                 CatalogApi::class,
                 ResourceWalker::class,
                 EventDispatcherInterface::class
-            ],
-
-            ResourceWalkerOptions::class => [
-                CatalogApi::class
-            ],
-
-            ResourceWalker::class => [
-                ResourceWalkerOptions::class
             ],
 
             ImportersManager::class => [
