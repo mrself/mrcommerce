@@ -4,5 +4,7 @@ namespace Mrself\Mrcommerce\Entity;
 
 interface EntityInterface
 {
-    public function setBcId(int $bcId): void;
+    public function setBcId(int $bcId);
+
+    public function getBcId(): ?int;
 }
