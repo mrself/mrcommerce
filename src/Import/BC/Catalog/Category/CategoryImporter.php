@@ -9,12 +9,12 @@ class CategoryImporter extends AbstractImporter implements ImporterInterface
 {
     protected function getMethodSingle(): string
     {
-        return 'getCategories';
+        return 'getCategoryById';
     }
 
     protected function getMethodMultiple(): string
     {
-        return 'getCategoryById';
+        return 'getCategories';
     }
 
 }
