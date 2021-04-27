@@ -5,6 +5,7 @@ namespace Mrself\Mrcommerce\Import\BC\Catalog;
 use BigCommerce\Api\v3\Model\Product as BcProduct;
 use Mrself\Mrcommerce\Entity\EntityInterface;
 use Mrself\Mrcommerce\Import\BC\Sync\SyncInterface;
+use Mrself\Mrcommerce\MrcommerceException;
 use Mrself\Mrcommerce\Repository\Catalog\ImportProcessor\RepositoryInterface;
 
 class RepositoryImportProcessor extends AbstractImportProcessor implements ImportProcessorInterface
@@ -77,4 +78,12 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
         }
     }
 
+    public function removeAbsentEntities()
+    {
+        if (method_exists($this->repository, 'removeBigcommerceNotSyncedEntities')) {
+            $this->repository->removeBigcommerceNotSyncedEntities();
+        } else {
+            throw new MrcommerceException('RepositoryImportProcessor\'s repository does not have the required method "removeBigcommerceNotSyncedEntities()" to remove');
+        }
+    }
 }
