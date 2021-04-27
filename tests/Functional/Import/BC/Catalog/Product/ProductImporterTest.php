@@ -41,12 +41,6 @@ class ProductImporterTest extends TestCase
         $processor = new ArrayImportProcessor();
         $this->importer->setImportProcessor($processor);
 
-        /** @var EventDispatcher $dispatcher */
-        $dispatcher = $this->container->get(EventDispatcherInterface::class);
-        $dispatcher->addListener(ResourceImportedEvent::NAME, function (ResourceImportedEvent $event) {
-            $this->assertEquals(1, $event->getBcResource()->getId());
-        });
-
         $this->eventDispatcher->addListener(
             BatchResourceImportedEvent::NAME,
             function (BatchResourceImportedEvent $event) {
