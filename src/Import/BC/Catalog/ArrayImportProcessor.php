@@ -78,9 +78,4 @@ class ArrayImportProcessor implements ImportProcessorInterface
     {
         return true;
     }
-
-    public function removeAbsentEntities()
-    {
-        $this->absentEntitiesRemoved = true;
-    }
 }

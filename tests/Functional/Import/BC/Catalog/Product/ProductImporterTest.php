@@ -9,6 +9,7 @@ use Mrself\Mrcommerce\Import\BC\Catalog\ArrayImportProcessor;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\BatchResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
+use Mrself\Mrcommerce\Import\BC\Catalog\Exception\RemoveAbsentMethodNotExistException;
 use Mrself\Mrcommerce\Import\BC\Catalog\Exception\ResourceNotFoundException;
 use Mrself\Mrcommerce\Import\BC\Catalog\ImportResult\ResourceImportResult;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
@@ -167,6 +168,37 @@ class ProductImporterTest extends TestCase
 
     public function testImporterRemovesAbsentEntitiesIfItHasRelativeConfig()
     {
+        $this->apiMock->expects($this->exactly(2))
+            ->method('getProducts')
+            ->willReturnOnConsecutiveCalls(
+                new ProductResponse([
+                    'data' => [
+                        new Product(['id' => 1])
+                    ],
+                ]),
+                new ProductResponse([
+                    'data' => [],
+                ])
+            );
+
+        $processor = new class extends ArrayImportProcessor {
+            public function removeAbsentEntities()
+            {
+                $this->absentEntitiesRemoved = true;
+            }
+        };
+        $this->importer->setImportProcessor($processor);
+
+        $this->importer->setRemoveAbsentEntities(true);
+        $this->importer->importAll();
+
+        $this->assertTrue($processor->absentEntitiesRemoved);
+    }
+
+    public function testImporterThrowsIfRemoveAbsentEntitiesDoesNotExist()
+    {
+        $this->expectException(RemoveAbsentMethodNotExistException::class);
+
         $this->apiMock->expects($this->exactly(2))
             ->method('getProducts')
             ->willReturnOnConsecutiveCalls(
