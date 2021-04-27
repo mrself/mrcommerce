@@ -2,7 +2,9 @@
 
 namespace Mrself\Mrcommerce\Import\BC;
 
+use BigCommerce\Api\v3\ApiException;
 use Mrself\Mrcommerce\Import\BC\Catalog\ResourceWalkerOptions;
+use Symfony\Component\HttpFoundation\Response;
 
 class ResourceWalker
 {
@@ -91,12 +93,28 @@ class ResourceWalker
         $method = $this->options->apiMethod;
         $params = $this->makeParams();
 
-        $response = $this->options->client->$method(array_merge($params, $this->options->queryParams));
+        $response = $this->getResponse($method, $params);
         if (!$response || !$response->getData()) {
             return null;
         }
 
         return $response->getData();
+    }
+
+    protected function getResponse(string $method, array $params)
+    {
+        try {
+            return $this->options->client->$method(array_merge($params, $this->options->queryParams));
+        } catch (ApiException $e) {
+            if ($e->getCode() === Response::HTTP_TOO_MANY_REQUESTS) {
+                $timeout = $e->getResponseHeaders()['X-Rate-Limit-Time-Reset-Ms'];
+                $timeout = (int) ceil($timeout / 60);
+                sleep($timeout);
+                return $this->options->client->$method(array_merge($params, $this->options->queryParams));
+            }
+
+            throw $e;
+        }
     }
 
     protected function makeParams(): array
