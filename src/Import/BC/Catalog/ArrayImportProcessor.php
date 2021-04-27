@@ -19,6 +19,11 @@ class ArrayImportProcessor implements ImportProcessorInterface
      */
     private $skipAll;
 
+    /**
+     * @var bool
+     */
+    public $absentEntitiesRemoved = false;
+
     public function process($bcResource)
     {
         $this->resources[$bcResource->getId()] = $bcResource;
@@ -67,5 +72,15 @@ class ArrayImportProcessor implements ImportProcessorInterface
     public function setSkipAll(bool $value)
     {
         $this->skipAll = true;
+    }
+
+    public function getRemoveAbsentEntities(): bool
+    {
+        return true;
+    }
+
+    public function removeAbsentEntities()
+    {
+        $this->absentEntitiesRemoved = true;
     }
 }

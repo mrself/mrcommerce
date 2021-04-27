@@ -165,6 +165,36 @@ class ProductImporterTest extends TestCase
         $this->importer->importByBcId(1);
     }
 
+    public function testImporterRemovesAbsentEntitiesIfItHasRelativeConfig()
+    {
+        $this->apiMock->expects($this->exactly(2))
+            ->method('getProducts')
+            ->willReturnOnConsecutiveCalls(
+                new ProductResponse([
+                    'data' => [
+                        new Product(['id' => 1])
+                    ],
+                ]),
+                new ProductResponse([
+                    'data' => [],
+                ])
+            );
+
+        $processor = $this->createImportProcessor();
+        $this->importer->setRemoveAbsentEntities(true);
+        $this->importer->importAll();
+
+        $this->assertTrue($processor->absentEntitiesRemoved);
+    }
+
+    private function createImportProcessor(): ArrayImportProcessor
+    {
+        $processor = new ArrayImportProcessor();
+        $this->importer->setImportProcessor($processor);
+
+        return $processor;
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

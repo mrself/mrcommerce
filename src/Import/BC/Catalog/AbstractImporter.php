@@ -6,6 +6,7 @@ use BigCommerce\Api\v3\Api\CatalogApi;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\BatchResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourcesImportedEvent;
+use Mrself\Mrcommerce\Import\BC\Catalog\Exception\RemoveAbsentMethodNotExistException;
 use Mrself\Mrcommerce\Import\BC\Catalog\Exception\ResourceNotFoundException;
 use Mrself\Mrcommerce\Import\BC\Catalog\ImportResult\ResourceImportResult;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
@@ -37,6 +38,11 @@ abstract class AbstractImporter
      * @var int
      */
     private $resourceLimit = ResourceWalker::MAX_RESOURCE_LIMIT;
+
+    /**
+     * @var bool
+     */
+    protected $removeAbsentEntities = false;
 
     public function __construct(CatalogApi $catalogApi, ResourceWalker $walker, EventDispatcherInterface $eventDispatcher)
     {
@@ -103,6 +109,9 @@ abstract class AbstractImporter
         $this->importProcessor->endImportResources($resources);
     }
 
+    /**
+     * @throws RemoveAbsentMethodNotExistException
+     */
     public function importAll()
     {
         $this->walker->configureOptions(function (ResourceWalkerOptions $options) {
@@ -118,6 +127,27 @@ abstract class AbstractImporter
         });
 
         $this->walker->walk();
+
+        if ($this->getRemoveAbsentEntities()) {
+            $this->removeAbsentEntities();
+        }
+    }
+
+    /**
+     * @throws RemoveAbsentMethodNotExistException
+     */
+    protected function removeAbsentEntities()
+    {
+        if (method_exists($this->importProcessor, 'removeAbsentEntities')) {
+            $this->importProcessor->removeAbsentEntities();
+        } else {
+            throw new RemoveAbsentMethodNotExistException($this->importProcessor);
+        }
+    }
+
+    protected function getRemoveAbsentEntities(): bool
+    {
+        return $this->removeAbsentEntities;
     }
 
     protected function importBatchResource($bcResource): ResourceImportResult
@@ -175,5 +205,13 @@ abstract class AbstractImporter
 
     protected function configureResourceWalkerOptions(ResourceWalkerOptions $options)
     {
+    }
+
+    /**
+     * @param bool $removeAbsentEntities
+     */
+    public function setRemoveAbsentEntities(bool $removeAbsentEntities): void
+    {
+        $this->removeAbsentEntities = $removeAbsentEntities;
     }
 }
