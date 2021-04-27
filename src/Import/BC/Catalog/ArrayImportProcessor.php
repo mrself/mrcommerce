@@ -74,8 +74,4 @@ class ArrayImportProcessor implements ImportProcessorInterface
         $this->skipAll = true;
     }
 
-    public function getRemoveAbsentEntities(): bool
-    {
-        return true;
-    }
 }
