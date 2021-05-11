@@ -190,6 +190,7 @@ class ProductImporterTest extends TestCase
 
             public function resetIsImportedField()
             {
+                $this->isImportedReset = true;
             }
 
         };
@@ -199,6 +200,7 @@ class ProductImporterTest extends TestCase
         $this->importer->importAll();
 
         $this->assertTrue($processor->absentEntitiesRemoved);
+        $this->assertTrue($processor->isImportedReset);
     }
 
     public function testImporterThrowsIfRemoveAbsentEntitiesDoesNotExist()

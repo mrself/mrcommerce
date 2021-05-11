@@ -24,6 +24,11 @@ class ArrayImportProcessor implements ImportProcessorInterface
      */
     public $absentEntitiesRemoved = false;
 
+    /**
+     * @var bool
+     */
+    public $isImportedReset = false;
+
     public function process($bcResource)
     {
         $this->resources[$bcResource->getId()] = $bcResource;
