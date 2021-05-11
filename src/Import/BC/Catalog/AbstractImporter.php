@@ -111,7 +111,7 @@ abstract class AbstractImporter
     }
 
     /**
-     * @throws RemoveAbsentMethodNotExistException
+     * @throws MrcommerceException
      */
     public function importAll()
     {
