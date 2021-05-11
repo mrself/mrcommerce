@@ -6,12 +6,13 @@ use BigCommerce\Api\v3\Model\Product as BcProduct;
 use Mrself\Mrcommerce\Entity\EntityInterface;
 use Mrself\Mrcommerce\Import\BC\Sync\SyncInterface;
 use Mrself\Mrcommerce\MrcommerceException;
+use Mrself\Mrcommerce\Repository\Catalog\ImportProcessor\AbsentEntitiesRemovingInterface as RepositoryAbsentEntitiesRemovingInterface;
 use Mrself\Mrcommerce\Repository\Catalog\ImportProcessor\RepositoryInterface;
 
 class RepositoryImportProcessor extends AbstractImportProcessor implements ImportProcessorInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var RepositoryInterface|RepositoryAbsentEntitiesRemovingInterface
      */
     protected $repository;
 
@@ -80,10 +81,22 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
 
     public function removeAbsentEntities()
     {
-        if (method_exists($this->repository, 'removeBigcommerceNotSyncedEntities')) {
-            $this->repository->removeBigcommerceNotSyncedEntities();
-        } else {
-            throw new MrcommerceException('RepositoryImportProcessor\'s repository does not have the required method "removeBigcommerceNotSyncedEntities()" to remove');
+        $this->ensureHavingAbsentEntitiesRemovingInterface();
+        $this->repository->removeBigcommerceNotSyncedEntities();
+    }
+
+    public function resetIsImportedField()
+    {
+        $this->ensureHavingAbsentEntitiesRemovingInterface();
+        $this->repository->resetIsImportedField();
+    }
+
+    private function ensureHavingAbsentEntitiesRemovingInterface()
+    {
+        if ($this instanceof AbsentEntitiesRemovingInterface) {
+            if (!($this->repository instanceof RepositoryAbsentEntitiesRemovingInterface)) {
+                throw new MrcommerceException('Repository should implement AbsentEntitiesRemovingInterface');
+            }
         }
     }
 }

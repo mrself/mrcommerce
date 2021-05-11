@@ -5,6 +5,7 @@ namespace Mrself\Mrcommerce\Tests\Functional\Import\BC\Catalog\Product;
 use BigCommerce\Api\v3\Model\Product;
 use BigCommerce\Api\v3\Model\ProductCollectionResponse;
 use BigCommerce\Api\v3\Model\ProductResponse;
+use Mrself\Mrcommerce\Import\BC\Catalog\AbsentEntitiesRemovingInterface;
 use Mrself\Mrcommerce\Import\BC\Catalog\ArrayImportProcessor;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\BatchResourceImportedEvent;
 use Mrself\Mrcommerce\Import\BC\Catalog\Event\ResourceImportedEvent;
@@ -181,11 +182,16 @@ class ProductImporterTest extends TestCase
                 ])
             );
 
-        $processor = new class extends ArrayImportProcessor {
+        $processor = new class extends ArrayImportProcessor implements AbsentEntitiesRemovingInterface {
             public function removeAbsentEntities()
             {
                 $this->absentEntitiesRemoved = true;
             }
+
+            public function resetIsImportedField()
+            {
+            }
+
         };
         $this->importer->setImportProcessor($processor);
 
@@ -197,6 +203,8 @@ class ProductImporterTest extends TestCase
 
     public function testImporterThrowsIfRemoveAbsentEntitiesDoesNotExist()
     {
+        $this->markTestSkipped('The logic to check if absent entities should be removed was re-implemented with interfaces');
+
         $this->expectException(RemoveAbsentMethodNotExistException::class);
 
         $this->apiMock->expects($this->exactly(2))

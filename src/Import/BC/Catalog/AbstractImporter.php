@@ -10,6 +10,7 @@ use Mrself\Mrcommerce\Import\BC\Catalog\Exception\RemoveAbsentMethodNotExistExce
 use Mrself\Mrcommerce\Import\BC\Catalog\Exception\ResourceNotFoundException;
 use Mrself\Mrcommerce\Import\BC\Catalog\ImportResult\ResourceImportResult;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
+use Mrself\Mrcommerce\MrcommerceException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractImporter
@@ -114,6 +115,10 @@ abstract class AbstractImporter
      */
     public function importAll()
     {
+        if ($this->getRemoveAbsentEntities()) {
+            $this->resetIsImportedField();
+        }
+
         $this->walker->configureOptions(function (ResourceWalkerOptions $options) {
             $options->callback = function ($resources) {
                 $this->importResources($resources);
@@ -133,21 +138,27 @@ abstract class AbstractImporter
         }
     }
 
-    /**
-     * @throws RemoveAbsentMethodNotExistException
-     */
+    protected function resetIsImportedField()
+    {
+        if ($this->getRemoveAbsentEntities()) {
+            $this->importProcessor->resetIsImportedField();
+        } else {
+            throw new MrcommerceException('The method #resetIsImportedField() requires AbsentEntitiesRemovingInterface');
+        }
+    }
+
     protected function removeAbsentEntities()
     {
-        if (method_exists($this->importProcessor, 'removeAbsentEntities')) {
+        if ($this->getRemoveAbsentEntities()) {
             $this->importProcessor->removeAbsentEntities();
         } else {
-            throw new RemoveAbsentMethodNotExistException($this->importProcessor);
+            throw new MrcommerceException('The method #removeAbsentEntities() requires AbsentEntitiesRemovingInterface');
         }
     }
 
     protected function getRemoveAbsentEntities(): bool
     {
-        return $this->removeAbsentEntities;
+        return $this->importProcessor instanceof AbsentEntitiesRemovingInterface;
     }
 
     protected function importBatchResource($bcResource): ResourceImportResult
