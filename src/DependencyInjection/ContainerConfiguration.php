@@ -3,16 +3,19 @@
 namespace Mrself\Mrcommerce\DependencyInjection;
 
 use BigCommerce\Api\v3\Api\CatalogApi;
-use BigCommerce\Api\v3\ApiClient;
 use BigCommerce\Api\v3\Configuration;
 use League\Container\Container;
+use Mrself\Mrcommerce\BC\ApiClient;
+use Mrself\Mrcommerce\BC\Bigcommerce;
 use Mrself\Mrcommerce\BC\BigcommerceV2Configurator;
+use Mrself\Mrcommerce\Export\BC\Products\CustomFieldsExporter;
 use Mrself\Mrcommerce\Import\BC\Catalog\ImportersManager;
 use Mrself\Mrcommerce\Import\BC\Catalog\Product\ProductImporter;
 use Mrself\Mrcommerce\Import\BC\Catalog\ResourceWalkerOptions;
 use Mrself\Mrcommerce\Import\BC\Hooks\HooksManager;
 use Mrself\Mrcommerce\Import\BC\Hooks\RequestParser;
 use Mrself\Mrcommerce\Import\BC\ResourceWalker;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -99,6 +102,17 @@ class ContainerConfiguration
 
             ImportersManager::class => [
                 ProductImporter::class,
+            ],
+
+            Bigcommerce::class => [
+                ApiClient::class,
+                CatalogApi::class,
+                LoggerInterface::class,
+            ],
+
+            CustomFieldsExporter::class => [
+                LoggerInterface::class,
+                Bigcommerce::class,
             ]
         ];
     }

@@ -3,8 +3,8 @@
 namespace Mrself\Mrcommerce;
 
 use BigCommerce\Api\v3\Api\CatalogApi;
-use BigCommerce\Api\v3\ApiClient;
 use BigCommerce\Api\v3\Configuration;
+use Mrself\Mrcommerce\BC\ApiClient;
 
 class Container
 {
