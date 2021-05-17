@@ -67,7 +67,7 @@ class CustomFieldsExporter
         }
     }
 
-    private function findFieldsToCreate(array $newFields, array $existingFields): array
+    public function findFieldsToCreate(array $newFields, array $existingFields): array
     {
         $fieldsToCreate = [];
         foreach ($newFields as $newField) {
