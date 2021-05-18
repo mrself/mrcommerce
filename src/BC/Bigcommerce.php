@@ -46,6 +46,21 @@ class Bigcommerce
         );
     }
 
+    public function updateProductCategoriesInBatch(array $params)
+    {
+        $this->logger->info('Updating products with new categories', [
+            'data' => $params
+        ]);
+
+        $this->catalogApi->getApiClient()->callApi(
+            '/catalog/products',
+            'PUT',
+            [],
+            $params,
+            ['Content-Type' => 'application/json']
+        );
+    }
+
     /**
      * @param int $productId
      * @return CustomField[]
