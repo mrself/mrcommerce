@@ -1,7 +1,7 @@
 {
     "name": "mrself/mrcommerce",
     "description": "mrcommerce",
-    "type": "library",
+    "type": "symfony-bundle",
     "require": {
         "moderntribe/bigcommerce-api-php-v3": "^2.0",
         "league/container": "^3.3",
