@@ -1,5 +1,5 @@
 parameters:
-  mrcommerce.bc.host: '%env(MRCOMMERCE_HOST))%'
+  mrcommerce.bc.host: '%env(MRCOMMERCE_HOST)%'
   mrcommerce.bc.access_token: '%env(MRCOMMERCE_ACCESS_TOKEN)%'
   mrcommerce.bc.client_id: '%env(MRCOMMERCE_CLIENT_ID)%'
 
