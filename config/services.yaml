@@ -25,3 +25,8 @@ services:
   BigCommerce\Api\v3\Api\CatalogApi:
     arguments:
       - '@BigCommerce\Api\v3\ApiClient'
+
+  Mrself\Mrcommerce\Controller\:
+    resource: '../src/Controller/'
+    tags:
+      - 'controller.service_arguments'

@@ -1,0 +1,4 @@
+products_index:
+    path: /products
+    methods: GET
+    controller: Mrself\Mrcommerce\Controller\Admin\ProductsController::index

@@ -9,6 +9,8 @@
 >
     <php>
         <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="KERNEL_CLASS" value="Mrself\Mrcommerce\Tests\Helpers\TestingKernel" force="true" />
     </php>
 
     <testsuites>

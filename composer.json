@@ -8,10 +8,14 @@
         "phpunit/phpunit": "^8",
         "symfony/event-dispatcher": "^5.2",
         "ext-json": "*",
-        "bigcommerce/api": "^3.2"
+        "bigcommerce/api": "^3.2",
+        "symfony/yaml": "^5.2",
+        "doctrine/doctrine-bundle": "^2.3",
+        "doctrine/orm": "^2.8"
     },
     "require-dev": {
-        "symfony/framework-bundle": "^5.2"
+        "symfony/framework-bundle": "^5.2",
+        "symfony/browser-kit": "^5.2"
     },
     "autoload": {
         "psr-4": {

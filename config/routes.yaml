@@ -1,0 +1,4 @@
+mrcommerce_routes:
+    resource: '@MrcommerceBundle/config/routes/mrcommerce_routes.yaml'
+    prefix: /admin
+    name_prefix: mrcommerce_admin_
