@@ -29,8 +29,7 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
 
     public function process($bcResource)
     {
-        $product = $this->findOrCreate($bcResource);
-        $this->sync($bcResource, $product);
+        $product = $this->sync($bcResource);
         $this->repository->save($product);
     }
 
@@ -45,9 +44,18 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
         return $entity;
     }
 
-    private function sync($bcResource, EntityInterface $entity)
+    private function sync($bcResource)
     {
-        $this->sync->sync($bcResource, $entity);
+        $isNew = true;
+        $entity = $this->find($bcResource);
+
+        if (!$entity) {
+            $isNew = false;
+            $entity = $this->repository->createEntity();
+        }
+
+        $this->sync->sync($bcResource, $entity, $isNew);
+        return $entity;
     }
 
     private function find($bcResource): ?EntityInterface
@@ -57,8 +65,7 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
 
     public function processBatchResource($bcResource)
     {
-        $entity = $this->findOrCreate($bcResource);
-        $this->sync($bcResource, $entity);
+        $entity = $this->sync($bcResource);
 
         if (method_exists($this->repository, 'importBcResource')) {
             $this->repository->importBcResource($bcResource);
