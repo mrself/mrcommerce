@@ -29,8 +29,8 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
 
     public function process($bcResource)
     {
-        $product = $this->sync($bcResource);
-        $this->repository->save($product);
+        $entity = $this->sync($bcResource);
+        $this->repository->save($entity);
     }
 
     private function findOrCreate($bcResource): EntityInterface
