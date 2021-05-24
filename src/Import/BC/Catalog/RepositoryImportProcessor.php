@@ -33,17 +33,6 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
         $this->repository->save($entity);
     }
 
-    private function findOrCreate($bcResource): EntityInterface
-    {
-        $entity = $this->find($bcResource);
-
-        if (!$entity) {
-            $entity = $this->repository->createEntity();
-        }
-
-        return $entity;
-    }
-
     private function sync($bcResource)
     {
         $isNew = true;
