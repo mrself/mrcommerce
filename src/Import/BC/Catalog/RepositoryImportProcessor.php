@@ -35,11 +35,11 @@ class RepositoryImportProcessor extends AbstractImportProcessor implements Impor
 
     private function sync($bcResource)
     {
-        $isNew = true;
+        $isNew = false;
         $entity = $this->find($bcResource);
 
         if (!$entity) {
-            $isNew = false;
+            $isNew = true;
             $entity = $this->repository->createEntity();
         }
 
